@@ -11,19 +11,28 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
+import stateStore from "./stateStore";
 
 export default function Login({ navigation }) {
+
+  let VND = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "VND",
+  });
+
   const [productList, setProductList] = useState();
   const getProductList = async (text) => {
     await fetch("https://60c7a3edafc88600179f5766.mockapi.io/listPhone")
       .then((response) => response.json())
       .then((json) => {
         setProductList(json);
+        setData(json);
       })
       .catch((error) => {
         console.error(error);
       });
   };
+  let setData = stateStore(state => state.setList);
 
   useEffect(() => {
     getProductList();
@@ -59,7 +68,7 @@ export default function Login({ navigation }) {
               color: "#EE0033",
             }}
           >
-            {item.price} đ
+            {VND.format(item.price)}
           </Text>
         </View>
       </TouchableOpacity>

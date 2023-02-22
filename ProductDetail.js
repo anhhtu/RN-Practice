@@ -15,6 +15,12 @@ import {
 
 export default function ProductDetail({ route, navigation }) {
   const { item } = route.params;
+
+  let VND = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "VND",
+  });
+
   return (
     <View style={styles.container}>
       <View style={styles.titleRow}>
@@ -32,7 +38,7 @@ export default function ProductDetail({ route, navigation }) {
           {item.name}
         </Text>
         <Text style={{ fontSize: 25, fontWeight: "600", color: "#EE0033" }}>
-          {item.price} đ
+          {VND.format(item.price)}
         </Text>
         <Divider style={{ marginTop: 20 }} width={1} color={"black"} />
         <View
@@ -72,7 +78,7 @@ export default function ProductDetail({ route, navigation }) {
             backgroundColor: "#A5A5A5",
           }}
           onPress={() => {
-            navigation.navigate("Cart", {item});
+            navigation.navigate("Cart", { item });
           }}
         >
           <Text style={{ color: "white", fontSize: 18 }}>Add to cart</Text>

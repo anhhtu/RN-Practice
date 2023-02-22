@@ -12,12 +12,19 @@ import {
   Dimensions,
   Alert,
 } from "react-native";
+import stateStore from "./stateStore";
 
 export default function Cart({ route, navigation }) {
   const [productList, setProductList] = useState();
   const [productNum, setProductNum] = useState();
   const [totalPrice, setTotalPrice] = useState();
-  const { item } = route.params;
+
+  const count = stateStore(state => state.count);
+
+  let VND = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "VND",
+  });
 
   const getProductList = async () => {
     await fetch("https://60c7a3edafc88600179f5766.mockapi.io/w")
@@ -31,10 +38,12 @@ export default function Cart({ route, navigation }) {
       });
   };
 
+  let list = stateStore(state => state.list);
+
   useEffect(() => {
     getProductList();
+    console.log("htbhhb", list)
   }, []);
-
 
   const onDelete = (deleteID) => {
     console.log(deleteID);
@@ -48,15 +57,15 @@ export default function Cart({ route, navigation }) {
     setProductNum(newList.length);
   };
 
-  // const onDeleteAPI = async (deleteID) => {
-  //   fetch("https://60c7a3edafc88600179f5766.mockapi.io/w/" + deleteID, {
-  //     method: "DELETE",
-  //   }).then((res) => {
-  //     res.json();
-  //     console.log(JSON.stringify(res));
-  //   });
-  //   getProductList();
-  // };
+  const onDeleteAPI = async (deleteID) => {
+    fetch("https://60c7a3edafc88600179f5766.mockapi.io/w/" + deleteID, {
+      method: "DELETE",
+    }).then((res) => {
+      res.json();
+      console.log(JSON.stringify(res));
+    });
+    getProductList();
+  };
 
   //Change products quantity
   const updateItem = (item, isPlus) => {
@@ -64,30 +73,28 @@ export default function Cart({ route, navigation }) {
       item.quantityBuy = item.quantityBuy + 1;
     } else {
       item.quantityBuy = item.quantityBuy - 1;
-
     }
 
+    const requestOption = {
+      method: "PUT",
+      headers: { "content-Type": "application/json" },
+      body: JSON.stringify(item),
+    };
 
-  //   const requestOption = {
-  //     method: "PUT",
-  //     headers: { "content-Type": "application/json" },
-  //     body: JSON.stringify(item),
-  //   };
-
-  //   fetch(
-  //     "https://60c7a3edafc88600179f5766.mockapi.io/w/" + item.id,
-  //     requestOption
-  //   )
-  //     .then((response) => {
-  //       response.json();
-  //       if (response.status == 200) {
-  //         getProductList();
-  //       }         
-  //       console.log(response.status, "status");
-  //     })
-  //     .then((data) => {
-  //       console.log(data);
-  //     });
+    fetch(
+      "https://60c7a3edafc88600179f5766.mockapi.io/w/" + item.id,
+      requestOption
+    )
+      .then((response) => {
+        response.json();
+        if (response.status == 200) {
+          getProductList();
+        }
+        console.log(response.status, "status");
+      })
+      .then((data) => {
+        console.log(data);
+      });
   };
 
   const renderPost = (item) => {
@@ -101,13 +108,19 @@ export default function Cart({ route, navigation }) {
           <Text style={{ paddingBottom: 10, fontSize: 20, fontWeight: "bold" }}>
             {item.name}
           </Text>
-          <Text style={{ color: "red" }}>{item.price}đ</Text>
+          <Text style={{ color: "red" }}>{VND.format(item.price)}</Text>
           <Text style={{ color: "#707070", paddingTop: 10 }}>
             100 products left
           </Text>
         </View>
 
-        <View style={{justifyContent:'space-between', flexDirection:'column', height:120}}>
+        <View
+          style={{
+            justifyContent: "space-between",
+            flexDirection: "column",
+            height: 120,
+          }}
+        >
           <TouchableOpacity
             style={{ alignSelf: "flex-start", padding: 20 }}
             onPress={() => onDeleteAPI(item.id)}
@@ -120,17 +133,28 @@ export default function Cart({ route, navigation }) {
             />
           </TouchableOpacity>
 
-          <View style={{flexDirection:'row', justifyContent:'space-evenly', alignItems:'center'}}>
-            <TouchableOpacity style={{backgroundColor:'#F0F0F0', width:20}} onPress={() => updateItem(item, false)}>
-              <Text style={{fontSize:20, alignSelf:'center'}}>-</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-evenly",
+              alignItems: "center",
+            }}
+          >
+            <TouchableOpacity
+              style={{ backgroundColor: "#F0F0F0", width: 20 }}
+              onPress={() => updateItem(item, false)}
+            >
+              <Text style={{ fontSize: 20, alignSelf: "center" }}>-</Text>
             </TouchableOpacity>
             <Text>{item.quantityBuy}</Text>
-            <TouchableOpacity style={{backgroundColor:'#F0F0F0', width:20}} onPress={() => updateItem(item, true)}>
-              <Text style={{fontSize:20, alignSelf:'center'}}>+</Text>
+            <TouchableOpacity
+              style={{ backgroundColor: "#F0F0F0", width: 20 }}
+              onPress={() => updateItem(item, true)}
+            >
+              <Text style={{ fontSize: 20, alignSelf: "center" }}>+</Text>
             </TouchableOpacity>
           </View>
         </View>
-
       </View>
     );
   };
@@ -139,7 +163,7 @@ export default function Cart({ route, navigation }) {
     <View style={styles.container}>
       <View style={styles.titleRow}>
         <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>
-          My Cart
+          My Cart   {count}
         </Text>
       </View>
 
@@ -169,8 +193,6 @@ export default function Cart({ route, navigation }) {
     </View>
   );
 }
-
-
 
 let deviceWidth = Dimensions.get("window").width;
 const styles = StyleSheet.create({
