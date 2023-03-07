@@ -90,12 +90,12 @@ const ChatScreen = () => {
               placeholder="Message..."
               style={{
                 paddingLeft: 10,
-                width: 200,
+                width: 260,
                 height: 40,
               }}
             />
           </View>
-          <View style={{width:120, alignItems:'flex-end'}}>
+          <View style={{alignItems:'center'}}>
             <TouchableOpacity>
               <Text style={{padding:10, color:'#0685FA', fontSize:18, fontWeight:'600'}}>Send</Text>
             </TouchableOpacity>
