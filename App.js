@@ -6,7 +6,8 @@ import LoginScreen from './Login';
 import SearchScreen from './SearchScreen';
 import ProductDetail from './ProductDetail';
 import Tab from './Tab';
-
+import ConversationList from './Chat/ConversationList';
+import ChatScreen from './Chat/ChatScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +20,8 @@ export default function App() {
         <Stack.Screen name="Tab" component={Tab}/>
         <Stack.Screen name="SearchScreen" component={SearchScreen}/>
         <Stack.Screen name='ProductDetail' component={ProductDetail}/>
+        <Stack.Screen name='Conversationlist' component={ConversationList}/>
+        <Stack.Screen name='ChatScreen' component={ChatScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

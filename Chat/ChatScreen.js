@@ -16,7 +16,9 @@ import Fontisto from "react-native-vector-icons/Fontisto";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const ChatScreen = () => {
+const ChatScreen = ({route}) => {
+  const { item } = route.params;
+
   return (
     <View style={styles.container}>
       <View style={styles.titleRow}>
@@ -34,17 +36,17 @@ const ChatScreen = () => {
                   marginHorizontal: 10,
                 }}
                 source={{
-                  uri: "https://i.pinimg.com/564x/7a/83/d5/7a83d5ee7174fcfaece28dccd7e4128e.jpg",
+                  uri: item.avatar,
                 }}
               />
               <View style={styles.greenDot}></View>
             </View>
             <View style={{ height: 45, justifyContent: "space-evenly" }}>
-              <Text style={{ fontSize: 18, fontWeight: "600" }}>_anhh.tu</Text>
+              <Text style={{ fontSize: 18, fontWeight: "600" }}>{item.name}</Text>
               <Text
                 style={{ fontSize: 12, fontWeight: "500", color: "#757575" }}
               >
-                Active now
+                Hoạt động {item.age} phút trước
               </Text>
             </View>
           </TouchableOpacity>
