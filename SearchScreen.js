@@ -11,17 +11,18 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
+import VND from "./Extensions";
 
 export default function SearchScreen() {
-  const [productList, setProductList] = useState();
-  const getProductList = async (text) => {
-    await fetch(
-      "https://api.themoviedb.org/3/search/keyword?api_key=e9e9d8da18ae29fc430845952232787c&page=1&query=" +
-        text
-    )
+  const [search, setSearch] = useState("");
+  const [productList, setProductList] = useState([]);
+  const [filteredProductList, setFilteredProductList] = useState([]);
+
+  const getProductList = async () => {
+    await fetch("https://60c7a3edafc88600179f5766.mockapi.io/listPhone")
       .then((response) => response.json())
       .then((json) => {
-        setProductList(json.results);
+        setProductList(json);
       })
       .catch((error) => {
         console.error(error);
@@ -31,6 +32,22 @@ export default function SearchScreen() {
   useEffect(() => {
     getProductList();
   }, []);
+
+  const searchFilterFunction = (text) => {
+    // Check if searched text is not blank
+    if (text) {
+      const newData = productList.filter(function (item) {
+        const itemData = item.name ? item.name.toUpperCase() : "".toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+      setFilteredProductList(newData);
+      setSearch(text);
+    } else {
+      setFilteredProductList([]);
+      setSearch(text);
+    }
+  };
 
   const renderPost = (item) => {
     return (
@@ -45,7 +62,7 @@ export default function SearchScreen() {
         >
           {item.name}
         </Text>
-        <Text style={{ color: "white" }}>{item.id}.000vnd</Text>
+        <Text style={{ color: "white" }}>{VND.format(item.price)}</Text>
       </View>
     );
   };
@@ -57,8 +74,9 @@ export default function SearchScreen() {
           style={styles.searchBarInput}
           placeholder="Enter here"
           onChangeText={(text) => {
-            getProductList(text);
+            searchFilterFunction(text);
           }}
+          value={search}
         />
         <Text style={{ color: "white", fontWeight: "bold", fontSize: 18 }}>
           Search
@@ -67,7 +85,7 @@ export default function SearchScreen() {
 
       <View style={styles.productView}>
         <FlatList
-          data={productList}
+          data={filteredProductList}
           renderItem={({ item }) => renderPost(item)}
           keyExtractor={(item) => item.id}
           numColumns={2}
