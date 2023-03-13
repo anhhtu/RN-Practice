@@ -9,15 +9,37 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Feather from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Fontisto from "react-native-vector-icons/Fontisto";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+// import FontAwesome from "react-native-vector-icons/FontAwesome";
+// import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { io } from "socket.io-client";
 
 const ChatScreen = ({route}) => {
   const { item } = route.params;
+
+  const [vote1, setVote1] = useState(10);
+  const [vote2, setVote2] = useState(10);
+  const socket = io('http://192.168.1.49:3000');
+
+  useEffect(() => {
+    socket.on('vote1', (vote1) => {
+      setVote1(vote1)
+    })
+    socket.on('vote2', (vote2) => {
+      setVote2(vote2)
+    })
+  }, []);
+  
+  const onVote1 = () => {
+    console.log('Ket noi');
+    socket.emit('vote1', vote1 + 20)
+  }
+  const onVote2 = () => {
+    socket.emit('vote2', vote2 + 20)
+  }
 
   return (
     <View style={styles.container}>
@@ -64,7 +86,16 @@ const ChatScreen = ({route}) => {
         </View>
       </View>
 
-      <View style={styles.conversationView}></View>
+      <View style={styles.conversationView}>
+        <TouchableOpacity onPress={() => onVote1()}>
+          <Text>VOTE1</Text>
+        </TouchableOpacity>
+        <View style={{flex:1, backgroundColor:'cyan', width:vote1}}></View>
+        <TouchableOpacity onPress={() => onVote2()}>
+          <Text>VOTE2</Text>
+        </TouchableOpacity>
+        <View style={{flex:1, backgroundColor:'pink', width:vote2}}></View>
+      </View>
 
       <KeyboardAvoidingView
         style={styles.inputRow}
