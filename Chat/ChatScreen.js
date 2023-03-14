@@ -11,15 +11,25 @@ import {
   Keyboard,
   ScrollView,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import Feather from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Fontisto from "react-native-vector-icons/Fontisto";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import MessageBubble from "../components/MessageBubble";
 
 const ChatScreen = ({ route }) => {
   const { item } = route.params;
+
+  const [messageInput, setMessageInput] = useState(null);
+  const [messageList, setMessageList] = useState([]);
+
+  const handleSendMessage = () => {
+    messageInput === null
+      ? setMessageList(messageList)
+      : setMessageList([...messageList, messageInput]);
+    setMessageInput(null);
+    Keyboard.dismiss();
+  };
 
   return (
     <View style={styles.container}>
@@ -68,7 +78,13 @@ const ChatScreen = ({ route }) => {
         </View>
       </View>
 
-      <View style={styles.conversationView}></View>
+      <View style={styles.conversationView}>
+        <ScrollView>
+          {messageList.map((item, index) => {
+            return <MessageBubble key={index} text={item} />;
+          })}
+        </ScrollView>
+      </View>
 
       <KeyboardAvoidingView
         style={styles.inputRow}
@@ -104,9 +120,11 @@ const ChatScreen = ({ route }) => {
             />
           </View>
           <View style={{ alignItems: "center" }}>
-            <TouchableOpacity onPress={() => {
-                  handleSendMessage();
-                }}>
+            <TouchableOpacity
+              onPress={() => {
+                handleSendMessage();
+              }}
+            >
               <Text
                 style={{
                   padding: 10,
