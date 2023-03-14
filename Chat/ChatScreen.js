@@ -11,25 +11,15 @@ import {
   Keyboard,
   ScrollView,
 } from "react-native";
-import React, { useState } from "react";
+import React from "react";
 import Feather from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Fontisto from "react-native-vector-icons/Fontisto";
-import MessageBubble from "../components/MessageBubble";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const ChatScreen = ({ route }) => {
   const { item } = route.params;
-  const [messageInput, setMessageInput] = useState(null);
-  const [messageList, setMessageList] = useState([]);
-
-  const handleSendMessage = () => {
-    messageInput === null
-      ? setMessageList(messageList)
-      : setMessageList([...messageList, messageInput]);
-
-    setMessageInput(null);
-    Keyboard.dismiss();
-  };
 
   return (
     <View style={styles.container}>
@@ -78,13 +68,7 @@ const ChatScreen = ({ route }) => {
         </View>
       </View>
 
-      <View style={styles.conversationView}>
-        <ScrollView>
-          {messageList.map((item, index) => {
-            return <MessageBubble key={index} text={item} />;
-          })}
-        </ScrollView>
-      </View>
+      <View style={styles.conversationView}></View>
 
       <KeyboardAvoidingView
         style={styles.inputRow}
