@@ -8,13 +8,14 @@ import ProductDetail from './ProductDetail';
 import Tab from './Tab';
 import ConversationList from './Chat/ConversationList';
 import ChatScreen from './Chat/ChatScreen';
+import Map from './Map';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{headerShown: false}} headerShown='none' initialRouteName="Welcome">
+      <Stack.Navigator screenOptions={{headerShown: false}} headerShown='none' initialRouteName="MapScreen">
         <Stack.Screen name="Welcome" component={WelcomeScreen}/>
         <Stack.Screen name="Login" component={LoginScreen}/>
         <Stack.Screen name="Tab" component={Tab}/>
@@ -22,6 +23,7 @@ export default function App() {
         <Stack.Screen name='ProductDetail' component={ProductDetail}/>
         <Stack.Screen name='Conversationlist' component={ConversationList}/>
         <Stack.Screen name='ChatScreen' component={ChatScreen}/>
+        <Stack.Screen name='MapScreen' component={Map}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
