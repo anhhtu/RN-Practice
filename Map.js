@@ -40,8 +40,8 @@ export default class App extends Component {
         >
     <MapView.Marker
       coordinate={this.state.location.coords}
-      title="My Marker"
-      description="Some description"
+      title="Marker"
+      description="Description"
     />
         </MapView>
       
